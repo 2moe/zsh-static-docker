@@ -100,8 +100,14 @@ ghcr_zsh_repo=ghcr.io/2moe/zsh-static
 reg_zsh_repo=reg.tmoe.me:2096/pkgs/zsh-static
 
 case $DOCKER_REPO {
-    (reg) main_repo=$reg_zsh_repo ;;
-    (*) main_repo=$ghcr_zsh_repo ;;
+    (reg)
+        main_repo=$reg_zsh_repo
+        sid_repo=reg.tmoe.me:2096/debian/sid:$host_arch
+    ;;
+    (*)
+        main_repo=$ghcr_zsh_repo
+        sid_repo=ghcr.io/2cd/debian-sid:$host_arch
+    ;;
 }
 main_repo+=:latest
 
@@ -138,41 +144,19 @@ for platform arch (${(kv)oci_arch_map}) {
         --platform
         linux/$platform
     )
+    args+=(
+        --build-arg
+        OLD_REPO=$main_repo:$host_arch
 
-    case $DOCKER_REPO {
-        (reg) args+=(
-                --build-arg
-                OLD_REPO=$reg_zsh_repo:$host_arch
+        --build-arg
+        SID_REPO=$sid_repo
+    )
+    zsh_repo=$main_repo:$tmm_arch
+    manifest_repo_arr+=$zsh_repo
 
-                --build-arg
-                SID_REPO=reg.tmoe.me:2096/debian/sid:$host_arch
-            )
-            zsh_repo=$reg_zsh_repo:$tmm_arch
-            ;;
-        (*) args+=(
-                --build-arg
-                OLD_REPO=$ghcr_zsh_repo:$host_arch
-
-                --build-arg
-                SID_REPO=ghcr.io/2cd/debian-sid:$host_arch
-            )
-            zsh_repo=$ghcr_zsh_repo:$tmm_arch
-            ;;
-    }
-
-    for i (
-        $reg_zsh_repo:$tmm_arch
-        # $ghcr_zsh_repo:$tmm_arch
-    ) {
-        args+=(
-            --tag  $i
-            # context:
-            .
-        )
-        manifest_repo_arr+=$i
-        docker $args
-        docker push $i
-    }
+    args+=( --tag $zsh_repo . )
+    docker $args
+    docker push $zsh_repo
 }
 
 create_manifest_args=(
