@@ -154,17 +154,32 @@ for platform arch (${(kv)oci_arch_map}) {
     manifest_repo_arr+=$zsh_repo
 
     args+=( --tag $zsh_repo . )
-    docker $args
-    docker push $zsh_repo
+    # docker $args
+    # docker push $zsh_repo
 }
-
-create_manifest_args=(
+create_args=(
     manifest
     create
     --amend
-    $main_repo:latest
+)
+
+latest_manifest_args=(
+    $create_args
+    ${main_repo}:latest
     $manifest_repo_arr
 )
-docker $create_manifest_args
+docker $latest_manifest_args
 
-docker manifest push --purge $main_repo:latest
+today=$(date --utc +%Y-%m-%d)
+date_manifest_args=(
+    $create_args
+    ${main_repo}:$today
+    $manifest_repo_arr
+)
+docker $date_manifest_args
+# ---------
+push_args=(
+    manifest push --purge
+)
+docker $push_args ${main_repo}:latest
+docker $push_args ${main_repo}:$today
