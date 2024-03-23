@@ -109,7 +109,6 @@ case $DOCKER_REPO {
         sid_repo=ghcr.io/2cd/debian-sid:$host_arch
     ;;
 }
-main_repo+=:latest
 
 manifest_repo_arr=()
 # key: platform
@@ -163,9 +162,9 @@ create_manifest_args=(
     manifest
     create
     --amend
-    $main_repo
+    $main_repo:latest
     $manifest_repo_arr
 )
 docker $create_manifest_args
 
-docker manifest push --purge $main_repo
+docker manifest push --purge $main_repo:latest
