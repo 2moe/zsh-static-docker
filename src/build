@@ -180,4 +180,4 @@ date_manifest_args=(
     $manifest_repo_arr
 )
 docker $date_manifest_args
-docker $push_args $$repo
+docker $push_args $repo
