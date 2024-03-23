@@ -15,10 +15,9 @@ run it on posix-sh:
 tag=latest
 
 get_bin() {
-    docker run --rm -v $PWD/tmp:/app ghcr.io/2moe/zsh-static:$tag cp /opt/bin/$bin /app/
+    docker run --rm -v $PWD/tmp:/app ghcr.io/2moe/zsh-static:$tag cp -L /opt/bin/$bin /app/
 }
 
-# "zsh" | "busybox"
 bin=zsh
 
 get_bin
@@ -27,5 +26,6 @@ get_bin
 
 bin=busybox
 get_bin
-./tmp/busybox ash
+
+./tmp/busybox
 ```
