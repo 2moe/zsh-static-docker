@@ -21,4 +21,7 @@ tag=x64
 tag=latest
 
 docker run --rm -v /usr/local/bin:/app ghcr.io/2moe/zsh-static:$tag cp /opt/bin/zsh /app/zsh-static
+
+# test: print Hello World
+/usr/local/bin/zsh-static -c 'print -P "%F{blue}Hello%f %F{cyan}World%f"'
 ```
