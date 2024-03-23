@@ -329,7 +329,7 @@
             <line x1="-1" x2="50" y1="20" y2="20" stroke="rgb(31, 119, 180)" stroke-width="1.5"
                 style="--darkreader-inline-stroke: #1c6ca4;" data-darkreader-inline-stroke=""></line>
             <foreignObject class="markmap-foreign" x="8" y="0" style="opacity: 1;" width="32" height="20">
-                <div xmlns="http://www.w3.org/1999/xhtml">i386</div>
+                <div xmlns="http://www.w3.org/1999/xhtml">x86</div>
             </foreignObject>
         </g>
         <g data-depth="3" data-path="1.16.17" transform="translate(350, -115)" class="markmap-node">

@@ -39,7 +39,7 @@ markmap:
 
 ## linux/386
 
-- i386
+- x86
 
 ## linux/alpha
 
