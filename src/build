@@ -38,15 +38,15 @@ local -A oci_arch_map=(
     amd64p32      x32
 
     # # debian 12:
-    mipsle        mipsel,mipsle
+    # mipsle        mipsel,mipsle
     # # debain 10:
-    mips          mips,mipsbe
+    # mips          mips,mipsbe
     # # debain 9:
-    arm/v4        armel,armv4t
+    # arm/v4        armel,armv4t
     # # debian 7:
-    sparc         sparc
+    # sparc         sparc
     # # debian 5.0
-    arm/v3        arm,armv3
+    # arm/v3        arm,armv3
 )
 local -A host_arch_map=(
     x86_64      x64
@@ -134,9 +134,6 @@ for platform arch (${(kv)oci_arch_map}) {
         --build-arg
         DEB_ARCH=$deb_arch
 
-        # --build-arg
-        # TMM_ARCH=$tmm_arch
-
         --build-arg
         DEB_SUITE=$suite
 
@@ -154,32 +151,33 @@ for platform arch (${(kv)oci_arch_map}) {
     manifest_repo_arr+=$zsh_repo
 
     args+=( --tag $zsh_repo . )
-    # docker $args
-    # docker push $zsh_repo
+    docker $args
+    docker push $zsh_repo
 }
 create_args=(
     manifest
     create
     --amend
 )
-
-latest_manifest_args=(
-    $create_args
-    ${main_repo}:latest
-    $manifest_repo_arr
-)
-docker $latest_manifest_args
-
-today=$(date --utc +%Y-%m-%d)
-date_manifest_args=(
-    $create_args
-    ${main_repo}:$today
-    $manifest_repo_arr
-)
-docker $date_manifest_args
-# ---------
 push_args=(
     manifest push --purge
 )
-docker $push_args ${main_repo}:latest
-docker $push_args ${main_repo}:$today
+# -------------------------
+repo=${main_repo}:latest
+latest_manifest_args=(
+    $create_args
+    $repo
+    $manifest_repo_arr
+)
+docker $latest_manifest_args
+docker $push_args $repo
+# --------------------------
+today=$(date --utc +%Y-%m-%d)
+repo=${main_repo}:$today
+date_manifest_args=(
+    $create_args
+    $repo
+    $manifest_repo_arr
+)
+docker $date_manifest_args
+docker $push_args $$repo
