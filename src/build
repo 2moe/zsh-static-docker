@@ -42,15 +42,10 @@ local -A oci_arch_map=(
     # mips          mips,mipsbe
     # # debain 9:
     # arm/v4        armel,armv4t
-
-    #
-    #
     # # debian 7:
     # sparc         sparc
     # # debian 5.0
     # arm/v3        arm,armv3
-
-    # # PowerPCSPE?
 )
 local -A host_arch_map=(
     x86_64      x64
@@ -154,6 +149,6 @@ for platform arch (${(kv)oci_arch_map}) {
             .
         )
         docker $args
-        # docker push $i
+        docker push $i
     }
 }

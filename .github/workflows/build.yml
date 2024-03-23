@@ -1,0 +1,34 @@
+name: build
+# auto-task.start-build-time = ?
+on: { "push": { "paths": [".github/workflows/build.yml"] } }
+
+env:
+  DEBIAN_FRONTEND: noninteractive
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: zsh --pipefail -fex {0}
+    env:
+      # ZSH_REPO: ghcr.io/2moe/zsh-static
+      ZSH_REPO: reg.tmoe.me:2096/pkgs/zsh-static:x64
+    steps:
+      - name: install zsh
+        shell: sh -e {0}
+        run: docker run --rm -v /usr/local/bin:/app ${{env.ZSH_REPO}} cp /opt/bin/zsh /app/
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 1
+
+      - name: build & push
+        run: ./src/build

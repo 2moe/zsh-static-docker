@@ -1,20 +1,21 @@
 # zsh-static-docker
 
-## Platforms
-
 ![platforms](./assets/markmap/platforms.svg)
 
-## Run
+## get zsh bin
 
 ```sh
-# x86_64:
-arch=x64
-# aarch64:
-arch=arm64
-# loongarch64:
-arch=loong64
 # riscv64
 arch=rv64gc
 
-docker run -it --rm ghcr.io/2moe/zsh-static:$arch
+# loongarch64:
+arch=loong64
+
+# aarch64:
+arch=arm64
+
+# x86_64:
+arch=x64
+
+docker run --rm -v /usr/local/bin:/app ghcr.io/2moe/zsh-static:$arch cp /opt/bin/zsh /app/zsh-static
 ```
