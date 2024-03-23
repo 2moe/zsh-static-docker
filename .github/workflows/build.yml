@@ -1,6 +1,7 @@
 name: build
 # auto-task.start-build-time = ?
-on: { "push": { "paths": [".github/workflows/build.yml"] } }
+# on: { "push": { "paths": [".github/workflows/build.yml"] } }
+on: { "schedule": [{ "cron": "11 5 20 1,5,9 *" }] }
 
 env:
   DEBIAN_FRONTEND: noninteractive

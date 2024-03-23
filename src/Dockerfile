@@ -25,7 +25,7 @@ RUN <<UPDATE_MIRROR_SRC
             mirror_src=/usr/local/etc/apt/mirrors/NJU.CN.sources
             unlink $SRC
             sed -E -e "$sed_exp" $mirror_src > $SRC ;;
-        *) sed -E -e "$sed_exp" -e 's@^#.*(URIs.*mirror)@\1@' -e 's@^URIs:.*snapshot@#&@' -i $SRC ;;
+        *) sed -E -e "$sed_exp" -e 's@^#.*(URIs:)(.*?mirror.*\s+)@\1 @' -e 's@^URIs:.*snapshot@#&@' -i $SRC ;;
     esac
 
     # apt-get update
@@ -65,6 +65,7 @@ COPY --chmod=755 <<'GET_DEB_BIN' /bin/get_deb_bin
         (amd64|riscv64|arm64|armhf|armel|s390x|ppc64el|i386|mips64el|mips|mipsel|sparc|arm) ;;
         (*) sed 's@/debian/@/debian-ports/@g' -i $SRC ;;
     }
+    cat $SRC
     apt-get update
     apt-get download $name
     dpkg-deb -X ${pkg}*.deb  .
