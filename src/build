@@ -7,8 +7,8 @@ typeset -x DOCKER_BUILDKIT=1
 local -r src_dir=${0:a:h}
 # --------------
 # "ghcr" | "reg"
-# local -r DOCKER_REPO=ghcr
-local -r DOCKER_REPO=reg
+local -r DOCKER_REPO=ghcr
+# local -r DOCKER_REPO=reg
 
 local -A oci_arch_map=(
     ## debian sid
