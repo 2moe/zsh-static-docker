@@ -12,8 +12,8 @@ jobs:
       run:
         shell: zsh --pipefail -fex {0}
     env:
-      # ZSH_REPO: ghcr.io/2moe/zsh-static
-      ZSH_REPO: reg.tmoe.me:2096/pkgs/zsh-static:x64
+      ZSH_REPO: ghcr.io/2moe/zsh-static:x64
+      # ZSH_REPO: reg.tmoe.me:2096/pkgs/zsh-static:x64
     steps:
       - name: install zsh
         shell: sh -e {0}
