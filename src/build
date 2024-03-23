@@ -163,21 +163,8 @@ push_args=(
     manifest push --purge
 )
 # -------------------------
-repo=${main_repo}:latest
-latest_manifest_args=(
-    $create_args
-    $repo
-    $manifest_repo_arr
-)
-docker $latest_manifest_args
-docker $push_args $repo
-# --------------------------
-today=$(date --utc +%Y-%m-%d)
-repo=${main_repo}:$today
-date_manifest_args=(
-    $create_args
-    $repo
-    $manifest_repo_arr
-)
-docker $date_manifest_args
-docker $push_args $repo
+for tag ( latest $(date --utc +%Y-%m-%d) ) {
+    repo=${main_repo}:$tag
+    docker $create_args $repo $manifest_repo_arr
+    docker $push_args $repo
+}

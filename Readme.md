@@ -19,13 +19,11 @@ get_bin() {
 }
 
 bin=zsh
-
 get_bin
 # test: print Hello World
 ./tmp/zsh -fc 'print -P "%F{blue}Hello %F{cyan}World%f"'
 
 bin=busybox
 get_bin
-
 ./tmp/busybox
 ```
