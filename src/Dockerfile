@@ -18,16 +18,14 @@ ARG SRC=/etc/apt/sources.list.d/mirror.sources
 RUN <<UPDATE_MIRROR_SRC
 #!/bin/dash -ex
 # ---------
-    # replace http with https
-    sed_exp1='/debian/ s@(http)(://)@\1s\2@'
-    sed_exp2="s@(Suites:) sid@\1 $DEB_SUITE@"
+    sed_exp="s@(Suites:) sid@\1 $DEB_SUITE@"
 
     case $REGION in
         CN)
             mirror_src=/usr/local/etc/apt/mirrors/NJU.CN.sources
             unlink $SRC
-            sed -E -e "$sed_exp1" -e "$sed_exp2" $mirror_src > $SRC ;;
-        *) sed -E -e "$sed_exp2" -e "$sed_exp2" -i $SRC ;;
+            sed -E -e "$sed_exp" $mirror_src > $SRC ;;
+        *) sed -E -e "$sed_exp" -e 's@^#.*(URIs.*mirror)@\1@' -e 's@^URIs:.*snapshot@#&@' -i $SRC ;;
     esac
 
     # apt-get update
