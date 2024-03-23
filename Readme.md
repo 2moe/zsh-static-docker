@@ -6,16 +6,19 @@
 
 ```sh
 # riscv64
-arch=rv64gc
+tag=rv64gc
 
 # loongarch64:
-arch=loong64
+tag=loong64
 
 # aarch64:
-arch=arm64
+tag=arm64
 
 # x86_64:
-arch=x64
+tag=x64
 
-docker run --rm -v /usr/local/bin:/app ghcr.io/2moe/zsh-static:$arch cp /opt/bin/zsh /app/zsh-static
+# unknown:
+tag=latest
+
+docker run --rm -v /usr/local/bin:/app ghcr.io/2moe/zsh-static:$tag cp /opt/bin/zsh /app/zsh-static
 ```

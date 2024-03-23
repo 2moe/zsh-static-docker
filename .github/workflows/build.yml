@@ -30,7 +30,5 @@ jobs:
           ref: dev
           fetch-depth: 1
 
-      # - name: build & push
-      #   run: ./src/build
-      - name: tree
-        run: tree -L 2
+      - name: build & push
+        run: ./src/build
