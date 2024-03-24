@@ -13,7 +13,7 @@
 #### Dockerfile
 
 ```dockerfile
-COPY --from=ghcr.io/2moe/zsh-static /opt/bin/zsh /bin/zsh
+COPY --from=ghcr.io/2moe/zsh-static /opt/bin/zsh /bin/
 # --chmod requires `DOCKER_BUILDKIT`
 # COPY --chmod=755 --from=ghcr.io/2moe/zsh-static /opt/bin/busybox /bin/ash
 ```
@@ -23,6 +23,10 @@ COPY --from=ghcr.io/2moe/zsh-static /opt/bin/zsh /bin/zsh
 ```sh
 # files: ./tmp/zsh  ./tmp/busybox
 docker run --rm -v "$PWD/tmp":/host -w /opt/bin ghcr.io/2moe/zsh-static cp -L busybox zsh /host/
+
+# Considering that not all architectures are added to the `latest` manifest.
+# If you are using an "unpopular" architecture (e.g., sparc, mipsle),
+# you will need to specify the tag manually. (e.g., ghcr.io/2moe/zsh-static:mipsle)
 ```
 
 #### Github Actions workflow
@@ -79,10 +83,6 @@ cmd_exists() {
     builtin setopt interactive_comments 2>/dev/null ||:
 }
 
-# Considering that not all architectures are added to the `latest` manifest.
-# If you are using an "unpopular" architecture (e.g., sparc, mipsle),
-# you will need to specify the tag manually.
-#
 # About ia64(a.k.a., 64-Bit Intel Itanium architecture):
 #   Modern qemu does not support emulating ia64.
 #   If you don't have a machine (server) with ia64 cpu, then you need to download it by calling the docker api.
@@ -127,12 +127,16 @@ EOF
 
     # if tag == "latest" {}
     [ $tag != latest ] || {
+        #  In fact, the following match is not entirely accurate.
         case $(uname -m) in
             riscv64)     tag=rv64gc ;;
             x86_64)      tag=x64    ;;
             aarch64)     tag=arm64  ;;
             loong*64)    tag=loong64;;
             i*86)        tag=x86    ;;
+            arm*)        tag=armv5te;;
+            s390)        tag=s390x  ;;
+            ppc64le)     tag=ppc64le;;
             *)           tag=latest ;;
         esac
     }
@@ -220,7 +224,7 @@ In my opinion, POSIX-sh 不太好用。
 
 > 注：awk 不是 posix-sh, 它是一门单独的语言，挺有意思的。
 
-如果我是真心喜欢一门语言的话，那么它就算有再多的缺点，我都能欣然接受。
+如果我是真心喜欢一门语言的话，那么它就算有再多的缺点，我都能欣然接受；
 如果我太不喜欢的话，那么它的缺点就会被无限放大。
 
 喜欢与否是一件相当主观的事情，上面内容仅代表本人的看法。
