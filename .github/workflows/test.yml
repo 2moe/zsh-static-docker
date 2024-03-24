@@ -1,0 +1,37 @@
+name: test
+# auto-task.start-build-time = ?
+on: { "push": { "paths": [".github/workflows/test.yml"] } }
+
+env:
+  DEBIAN_FRONTEND: noninteractive
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: zsh --pipefail -fex {0}
+    env:
+      ZSH_STATIC: ghcr.io/2moe/zsh-static
+    steps:
+      - name: install zsh
+        shell: sh -e {0}
+        run: docker run --rm -v /usr/local/bin:/host -w /opt/bin ${{env.ZSH_STATIC}} cp -L zsh /host/
+
+      - name: test zsh
+        run: |
+          local -A map=(
+            groovy   "20.10"
+            hirsute  "21.04"
+            impish   "21.10"
+            jammy    "22.04"
+            kinetic  "22.10"
+            lunar    "23.04"
+            mantic   "23.10"
+            noble    "24.04"
+          )
+          for k v (${(kv)map}) {
+            print -P "%F{cyan}key: %F{blue}$k%f \t value: $v"
+          }
+
+

@@ -12,6 +12,7 @@ ARG DEBIAN_FRONTEND noninteractive
 ARG REGION=US
 ARG DEB_ARCH
 ARG DEB_SUITE
+# COPY --chmod=755 --from=old /opt/bin/zsh /bin/
 COPY --chmod=755 --from=old /opt/bin/busybox /opt/bin/zsh /bin/
 
 ARG SRC=/etc/apt/sources.list.d/mirror.sources
@@ -95,11 +96,19 @@ DOWNLOAD_BINS
 WORKDIR /app
 RUN <<LINK_BUSYBOX
 #!/bin/zsh -fe
-list=($(/bin/busybox --list))
-
-for i (${list:#busybox}) {
-    ln -sf busybox $i
-}
+#-------------
+    list=($(/bin/busybox --list))
+    for i (${list:#busybox}) {
+        ln -sf ./busybox $i
+    }
+    #
+    # -: last, busybox, nuke, uncompress, w, who
+    # list=(
+    #     '[' '[[' acpid adjtimex ar arch arp arping ascii ash awk base64 basename bc blkdiscard blockdev brctl bunzip2 bzcat bzip2 cal cat chgrp chmod chown chroot chvt clear cmp cp cpio crc32 crond crontab cttyhack cut date dc dd deallocvt depmod devmem df diff dirname dmesg dnsdomainname dos2unix dpkg dpkg-deb du dumpkmap dumpleases echo ed egrep env expand expr factor fallocate false fatattr fdisk fgrep find findfs fold free freeramdisk fsfreeze fstrim ftpget ftpput getopt getty grep groups gunzip gzip halt head hexdump hostid hostname httpd hwclock i2cdetect i2cdump i2cget i2cset i2ctransfer id ifconfig ifdown ifup init insmod ionice ip ipcalc kill killall klogd  less link linux32 linux64 linuxrc ln loadfont loadkmap logger login logname logread losetup ls lsmod lsscsi lzcat lzma lzop md5sum mdev microcom mim mkdir mkdosfs mke2fs mkfifo mknod mkpasswd mkswap mktemp modinfo modprobe more mount mt mv nameif nbd-client nc netstat nl nologin nproc nsenter nslookup  od openvt partprobe passwd paste patch pidof ping ping6 pivot_root poweroff printf ps pwd rdate readlink realpath reboot renice reset resume rev rm rmdir rmmod route rpm rpm2cpio run-init run-parts sed seq setkeycodes setpriv setsid sh sha1sum sha256sum sha3sum sha512sum shred shuf sleep sort ssl_client start-stop-daemon stat strings stty su sulogin svc svok swapoff swapon switch_root sync sysctl syslogd tac tail tar taskset tc tee telnet telnetd test tftp time timeout top touch tr traceroute traceroute6 true truncate ts tty tunctl ubirename udhcpc udhcpc6 udhcpd uevent umount uname unexpand uniq unix2dos unlink unlzma unshare unxz unzip uptime usleep uudecode uuencode vconfig vi watch watchdog wc wget which whoami xargs xxd xz xzcat yes zcat
+    # )
+    # for i ($list) {
+    #     ln -sf ./busybox $i
+    # }
 LINK_BUSYBOX
 
 # ----------
