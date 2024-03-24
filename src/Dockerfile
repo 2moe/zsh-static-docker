@@ -64,7 +64,7 @@ COPY --chmod=755 <<'GET_DEB_BIN' /bin/get_deb_bin
     }
     case $DEB_ARCH {
         (amd64|riscv64|arm64|armhf|armel|s390x|ppc64el|i386|mips64el|mips|mipsel|sparc|s390|arm) ;;
-        (*) sed 's@/debian/@/debian-ports/@g' -i $SRC ;;
+        (*) sed -E 's@/(debian)/@/\1-ports/@g' -i $SRC ;;
     }
     cat $SRC
     apt-get update
