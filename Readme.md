@@ -132,15 +132,15 @@ EOF
     [ $tag != latest ] || {
         #  In fact, the following match is not entirely accurate.
         case $(uname -m) in
-            riscv64)     tag=rv64gc ;;
-            x86_64)      tag=x64    ;;
-            aarch64)     tag=arm64  ;;
-            loong*64)    tag=loong64;;
-            i*86)        tag=x86    ;;
-            arm*)        tag=armv5te;;
-            s390)        tag=s390x  ;;
-            ppc64le)     tag=ppc64le;;
-            *)           tag=latest ;;
+            riscv64)       tag=rv64gc ;;
+            x86_64|amd64)  tag=x64    ;;
+            aarch64|arm64) tag=arm64  ;;
+            loong*64)      tag=loong64;;
+            i*86)          tag=x86    ;;
+            arm*)          tag=armv5te;;
+            s390*)         tag=s390x  ;;
+            ppc64le)       tag=ppc64le;;
+            *)             tag=latest ;;
         esac
     }
 
