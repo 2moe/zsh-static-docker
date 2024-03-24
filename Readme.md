@@ -140,7 +140,6 @@ EOF
             arm*)          tag=armv5te;;
             s390*)         tag=s390x  ;;
             ppc64le)       tag=ppc64le;;
-            *)             tag=latest ;;
         esac
     }
 
