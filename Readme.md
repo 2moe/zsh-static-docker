@@ -4,7 +4,8 @@
 
 ## get started
 
-- Suggests: `docker.io` | `docker`
+- Suggests:
+  - `docker.io` | `docker`
 
 ### have docker installed
 
@@ -72,6 +73,8 @@ jobs:
   - curl
   - sh | ash | dash | busybox-ash
   - tar | gnutar | bsdtar | libarchive-tools | busybox-tar
+- Suggests:
+  - tree
 
 run it on posix-sh:
 
@@ -152,17 +155,15 @@ EOF
         tar=tar
         ! cmd_exists bsdtar || tar=bsdtar
 
-        cd tmp
-
         # For newer versions of gnutar & bsdtar, `-xvf` automatically recognizes the file format.
-        $tar -xvf $layer || $tar -zxvf $layer
+        $tar -C tmp -xvf $layer || $tar -C tmp -zxvf $layer
 
-        # Copy ./opt/bin/{busybox,zsh} to ./
+        # Copy ./tmp/opt/bin/{busybox,zsh} to ./tmp/
         for i in busybox zsh; do
-            install -m755 opt/bin/$i $i || cp -L opt/bin/$i .
+            install -m755 tmp/opt/bin/$i tmp/$i || cp -L tmp/opt/bin/$i tmp/
         done
+        ! cmd_exists tree || tree tmp -L 2
 
-        cd -
         return
     }
     echo >&2 "[ERROR] Please change the value of 'tag=latest' to the architecture name (e.g., 'tag=armv7a')."
