@@ -6,9 +6,11 @@
 
 - Suggests: `docker.io` | `docker`
 
-If you have docker installed:
+### have docker installed
 
-Dockerfile:
+**If you have docker installed:**
+
+#### Dockerfile
 
 ```dockerfile
 COPY --from=ghcr.io/2moe/zsh-static /opt/bin/zsh /bin/zsh
@@ -16,14 +18,14 @@ COPY --from=ghcr.io/2moe/zsh-static /opt/bin/zsh /bin/zsh
 # COPY --chmod=755 --from=ghcr.io/2moe/zsh-static /opt/bin/busybox /bin/ash
 ```
 
-CLI:
+#### CLI
 
 ```sh
 # files: ./tmp/zsh  ./tmp/busybox
 docker run --rm -v "$PWD/tmp":/host -w /opt/bin ghcr.io/2moe/zsh-static cp -L busybox zsh /host/
 ```
 
-Github Actions workflow:
+#### Github Actions workflow
 
 ```yaml
 jobs:
@@ -55,7 +57,9 @@ jobs:
           }
 ```
 
-Otherwise:
+### Else
+
+**If you don't have dokcer installed, or the kernel doesn't support.**
 
 - Depends:
   - [nawk](https://github.com/onetrueawk/awk) | mawk | gawk | busybox-awk
@@ -160,15 +164,7 @@ EOF
     echo >&2 "[ERROR] Please change the value of 'tag=latest' to the architecture name (e.g., 'tag=armv7a')."
 }
 
-get_bin() {
-    docker ps >/dev/null || {
-        get_bin_without_docker
-        return
-    }
-    docker run --rm -v "$PWD/tmp":/host -w /opt/bin ghcr.io/2moe/zsh-static:$tag cp -L busybox zsh /host/
-}
-
-get_bin
+get_bin_without_docker
 
 # Only support GNU/Linux and mainstream musl/Linux (e.g., Alpine), not Android.
 # If you want to run it on Android, please run it in a container instead of extracting the binary.
@@ -254,7 +250,7 @@ Dockerfile 里的构建步骤，本来是用 posix-sh 语法来写的。
 
 最后，让我们庆祝这个 repo 的诞生 🥳！
 <del>
-Blessings for your birthday
-Blessings for your everyday
+Blessings for your birthday!
+Blessings for your everyday!
 Aunque el mundo se pueda acabar, disfrúalo.
 </del>
