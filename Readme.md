@@ -59,7 +59,7 @@ jobs:
 
 ### Else
 
-**If you don't have dokcer installed, or the kernel doesn't support.**
+**If you don't have docker installed, or the kernel doesn't support.**
 
 - Depends:
   - [nawk](https://github.com/onetrueawk/awk) | mawk | gawk | busybox-awk
