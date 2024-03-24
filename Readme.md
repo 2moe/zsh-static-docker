@@ -201,7 +201,7 @@ A: Let's say there is a situation where you use `apt update; apt install zsh` wh
 > Q: Why did you create this repo?
 
 A：
-初衷是为了方便在 Dokcerfile 以及 CI 流程 中使用 zsh。
+初衷是为了方便在 Dockerfile 以及 CI 流程 中使用 zsh。
 
 The main reason is that 我不太喜欢用 POSIX-sh & bash。
 
@@ -244,12 +244,12 @@ ca 证书 (**/etc/ca-certificates/extracted/tls-ca-bundle.pem**) 是可选的，
 
 > 由于 `/bin` , `/usr/bin`,  `/sbin` & `/usr/sbin` 合并了，为了避免目录的干扰，故 busybox 安装在 `/opt/bin`。
 
-这些东西加起来，压缩后才 4M+ (i.e., 最小的 ArchLinux 可以像嵌入式发行版一样做到只有 4M)
+这些东西加起来，压缩后才 4M+ (i.e., 最小的 ArchLinux 可以像嵌入式发行版一样做到只有 4M)。
 这时候如果用 `pacman-static -Syy base --overwrite '*'` 安装 `base`，那么压缩后的体积占用又变成了 100M+。
 如果不装 `base`，只装一些特别基础的包，可以做到 70M+，不过得要手动修复一些问题。
 在未安装 systemd 的情况下，有些东西得要手动去配置 (e.g., `useradd` 会弹出没有 `users` 用户的警告)。
 
-Dokcerfile 里的构建步骤，本来是用 posix-sh 语法来写的。
+Dockerfile 里的构建步骤，本来是用 posix-sh 语法来写的。
 后来，我就想：反正我挺喜欢 zsh 的，不如搞个 zsh-static 容器，之后不单单是构建 ArchLinux, 其他的东西（诸如 CI 流程）也能用 zsh 语法来写。
 
 最后，让我们庆祝这个 repo 的诞生 🥳！
