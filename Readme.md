@@ -40,6 +40,7 @@ jobs:
       - name: test zsh
         run: |
           local -A map=(
+            focal    "20.04"
             groovy   "20.10"
             hirsute  "21.04"
             impish   "21.10"
@@ -94,7 +95,7 @@ tag=latest
 get_bin_without_docker() {
     mkdir -p tmp
 
-    awk_args="$(cat<<'EOF'
+    awk_arg="$(cat<<'EOF'
     BEGIN {
         true = 1
         false = 0
@@ -136,7 +137,7 @@ EOF
     [ $tag = latest ] || {
         # Since the oci image supports the tar+zstd format, the layer does not have to be in tar+gzip format.
         layer=tmp/layer.tar.gz
-        awk -F'"' -v tag=$tag -v layer_file=$layer "$awk_args"
+        awk -F'"' -v tag=$tag -v layer_file=$layer "$awk_arg"
 
         # On some GNU/Linux, tar is gnutar;
         # On some embedded linux, tar is busybox tar.
