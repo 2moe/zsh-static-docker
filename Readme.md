@@ -94,8 +94,8 @@ cmd_exists() {
 # values: latest, rv64gc, x64, x86, loong64,
 #       arm64, armv7a, armv5te, armv4t, armv3,
 #       mips64le, mipsle, mipsbe, m68k, sh4,
-#       s390x, alpha, hppa, sparc64, sparc,
-#       ppc64le, ppc64, ppc, x32, ia64
+#       s390x, s390, alpha, sparc64, sparc,
+#       ppc64le, ppc64, ppc, hppa, x32, ia64
 tag=latest
 
 # ------------

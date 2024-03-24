@@ -45,6 +45,7 @@ local -A oci_arch_map=(
     # arm/v4        armel,armv4t
     # # debian 7:
     # sparc         sparc
+    # s390            s390
     # # debian 5.0
     # arm/v3        arm,armv3
 )
@@ -122,12 +123,12 @@ for platform arch (${(kv)oci_arch_map}) {
     }
 
     case $platform {
-        ("arm/v4") suite=stretch  ;;
-        ("arm/v3") suite=lenny    ;;
-        (mips)     suite=buster   ;;
-        (mipsle)   suite=bookworm ;;
-        (sparc)    suite=wheezy   ;;
-        (*)        suite=sid      ;;
+        ("arm/v4")   suite=stretch  ;;
+        ("arm/v3")   suite=lenny    ;;
+        (mips)       suite=buster   ;;
+        (mipsle)     suite=bookworm ;;
+        (sparc|s390) suite=wheezy   ;;
+        (*)          suite=sid      ;;
     }
     args=(
         $build_args
