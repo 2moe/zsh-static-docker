@@ -146,7 +146,7 @@ EOF
         # On some GNU/Linux, tar is gnutar;
         # On some embedded linux, tar is busybox tar.
         tar=tar
-        ! cmd_exists builtin || tar=bsdtar
+        ! cmd_exists bsdtar || tar=bsdtar
 
         cd tmp
 
