@@ -162,6 +162,7 @@ EOF
         return
     }
     echo >&2 "[ERROR] Please change the value of 'tag=latest' to the architecture name (e.g., 'tag=armv7a')."
+    exit 1
 }
 
 get_bin_without_docker
