@@ -237,9 +237,9 @@ In my opinion, POSIX-sh 不太好用。
 
 此前，我想要研究一下 ArchLinux 的基本 rootfs 的构建步骤。
 再加上之前有个疑问：为什么 ArchLinux 的最小 rootfs 压缩后都要 100M+？
-于是乎，好奇心驱使我对此探索。
+于是乎，好奇心驱使我对此进行探索。
 
-我想试试裁剪 rootfs, 不求做到 alpine 那种 3 ~ 5M的大小，至少要做到 ubuntu 那样 20M+。
+我想试试裁剪 rootfs, 不求做到 alpine 那种 2 ~ 4M 的大小，只想看看能否做到像 ubuntu noble 那样 25 ~ 40M 的大小。
 后来，我发现容器内只要包含 pacman-static + pacman 配置 + ca证书 + busybox-static, 就能构建不同架构的 rootfs 了。
 
 ca 证书 (**/etc/ca-certificates/extracted/tls-ca-bundle.pem**) 是可选的，不过要是无证书的话，就无法保证 https 连接的安全性，此时就得要引入 pgp 相关依赖，这样就变得更麻烦了。
@@ -247,12 +247,17 @@ ca 证书 (**/etc/ca-certificates/extracted/tls-ca-bundle.pem**) 是可选的，
 > 由于 `/bin` , `/usr/bin`,  `/sbin` & `/usr/sbin` 合并了，为了避免目录的干扰，故 busybox 安装在 `/opt/bin`。
 
 这些东西加起来，压缩后才 4M+ (i.e., 最小的 ArchLinux 可以像嵌入式发行版一样做到只有 4M)。
-这时候如果用 `pacman-static -Syy base --overwrite '*'` 安装 `base`，那么压缩后的体积占用又变成了 100M+。
+这时候如果用 `pacman-static -Syy base --overwrite '*'` 安装 `base`，那么压缩后的体积又变成了 100M+。
+
 如果不装 `base`，只装一些特别基础的包，可以做到 70M+，不过得要手动修复一些问题。
 在未安装 systemd 的情况下，有些东西得要手动去配置 (e.g., `useradd` 会弹出没有 `users` 用户的警告)。
 
+> 其实并非越精简越好，比如说：在某些情况下，我需要国际化与本地化数据 (i18n 与 L10n)，以及 man 文档，删掉或过滤掉的话，就与我的需求相违背了。
+
 Dockerfile 里的构建步骤，本来是用 posix-sh 语法来写的。
-后来，我就想：反正我挺喜欢 zsh 的，不如搞个 zsh-static 容器，之后不单单是构建 ArchLinux, 其他的东西（诸如 CI 流程）也能用 zsh 语法来写。
+
+后来，我就想：反正我挺喜欢 zsh 的，不如搞个 zsh-static 容器，之后不单单是构建 ArchLinux,
+其他的东西（诸如 CI 流程）也能用 zsh 语法来写。
 
 最后，让我们庆祝这个 repo 的诞生 🥳！
 <del>
