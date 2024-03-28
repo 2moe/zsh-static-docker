@@ -21,3 +21,5 @@ flamegraph.svg
 !/crates
 !/Cargo.toml
 !/src
+!/Dockerfile
+!/*.dockerfile

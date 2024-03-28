@@ -1,19 +1,20 @@
 # syntax=docker/dockerfile:1
-# build-args:
-ARG OLD_REPO
-ARG SID_REPO
-
-FROM $OLD_REPO as old
-FROM $SID_REPO as sid
-
+#
+# reg.tmoe.me:2096/pkgs/zsh-static
+ARG ZSH_REPO=ghcr.io/2moe/zsh-static
+# reg.tmoe.me:2096/debian/sid
+ARG SID_REPO=ghcr.io/2cd/debian-sid
+#
+FROM --platform=${BUILDPLATFORM} ${ZSH_REPO} as zsh-host
+FROM --platform=${BUILDPLATFORM} ${SID_REPO} as sid
+#
 ARG DEBIAN_FRONTEND noninteractive
 # -----------------
 # build-args:
 ARG REGION=US
 ARG DEB_ARCH
 ARG DEB_SUITE
-# COPY --chmod=755 --from=old /opt/bin/zsh /bin/
-COPY --chmod=755 --from=old /opt/bin/busybox /opt/bin/zsh /bin/
+COPY --chmod=755 --from=zsh-host /opt/bin/busybox /opt/bin/zsh /bin/
 
 ARG SRC=/etc/apt/sources.list.d/mirror.sources
 RUN <<UPDATE_MIRROR_SRC
@@ -26,7 +27,10 @@ RUN <<UPDATE_MIRROR_SRC
             mirror_src=/usr/local/etc/apt/mirrors/NJU.CN.sources
             unlink $SRC
             sed -E -e "$sed_exp" $mirror_src > $SRC ;;
-        *) sed -E -e "$sed_exp" -e 's@^#.*(URIs:)(.*?mirror.*\s+)@\1 @' -e 's@^URIs:.*snapshot@#&@' -i $SRC ;;
+        *)
+        # sed -E -e "$sed_exp" -e 's@^#.*(URIs:)(.*?mirror.*\s+)@\1 @' -e 's@^URIs:.*snapshot@#&@' -i $SRC
+        sed -E -e "$sed_exp" -e 's@^(URIs:).*@\1 https://deb.debian.org/debian/@g' -i $SRC
+        ;;
     esac
 
     # apt-get update

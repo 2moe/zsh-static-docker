@@ -7,11 +7,9 @@
 - Suggests:
   - `docker.io` | `docker`
 
-### have docker installed
-
 **If you have docker installed:**
 
-#### Dockerfile
+### Dockerfile
 
 ```dockerfile
 COPY --from=ghcr.io/2moe/zsh-static /opt/bin/zsh /bin/
@@ -19,7 +17,7 @@ COPY --from=ghcr.io/2moe/zsh-static /opt/bin/zsh /bin/
 # COPY --chmod=755 --from=ghcr.io/2moe/zsh-static /opt/bin/busybox /bin/ash
 ```
 
-#### CLI
+### CLI
 
 ```sh
 # files: ./tmp/zsh  ./tmp/busybox
@@ -30,7 +28,7 @@ docker run --rm -v "$PWD/tmp":/host -w /opt/bin ghcr.io/2moe/zsh-static cp -L bu
 # you will need to specify the tag manually. (e.g., ghcr.io/2moe/zsh-static:mipsle)
 ```
 
-#### Github Actions workflow
+### Github Actions workflow
 
 ```yaml
 jobs:
@@ -165,7 +163,7 @@ EOF
 
         return
     }
-    echo >&2 "[ERROR] Please change the value of 'tag=latest' to the architecture name (e.g., 'tag=armv7a')."
+    printf "%s\n" >&2 "[ERROR] Please change the value of 'tag=latest' to the architecture name (e.g., 'tag=armv7a')."
     exit 1
 }
 

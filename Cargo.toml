@@ -1,0 +1,18 @@
+[package]
+name = "build-zsh-docker"
+version = "0.0.0-alpha.0"
+edition = "2021"
+
+[dependencies]
+ahash = "0.8.11"
+lang-id = { version = "0.0.1-beta.3", default-features = false, features = [
+    "sys-lang",
+] }
+archmap = { git = "https://github.com/2cd/debian-museum" }
+argh = "0.1.12"
+time = "0.3.34"
+tinyvec = { version = "1.6.0", features = ["alloc"] }
+
+[profile.release]
+strip = true
+panic = "abort"
