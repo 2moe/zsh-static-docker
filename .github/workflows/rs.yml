@@ -19,7 +19,7 @@ jobs:
           CARGO_TARGET_DIR: /tmp/rs
         run: |
           cargo b -r
-          install -Dm755 /tmp/rs/release/build-zsh-docker tmp.dk/run
+          install -Dm755 /tmp/rs/release/build-zsh-docker tmp.dk/builder
           cp assets/builder/Dockerfile tmp.dk
 
       - name: Build and push
