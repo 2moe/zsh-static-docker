@@ -52,7 +52,7 @@ jobs:
             --posix
             --owner=root --group=root --numeric-owner
             -C a
-            -cf ../zsh-${{matrix.arch}}.tar.zst
+            -cf zsh-${{matrix.arch}}.tar.zst
             .
           )
           $run_tar
