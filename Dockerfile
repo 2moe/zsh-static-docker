@@ -86,7 +86,6 @@ COPY --chmod=755 <<'GET_DEB_BIN' /bin/get_deb_bin
     }
     install -Dm755 $bin /app/$dst
 GET_DEB_BIN
-
 # ---------
 RUN <<DOWNLOAD_BINS
 #!/bin/zsh -fex
@@ -119,5 +118,6 @@ LINK_BUSYBOX
 FROM scratch
 ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/local/games:/bin:/usr/games:/opt/bin
 COPY --from=sid /app/ /opt/bin
+COPY --from=sid /usr/share/terminfo /usr/share/terminfo
 SHELL [ "/opt/bin/zsh", "--pipefail", "-fexc"]
 CMD [ "/opt/bin/zsh" ]

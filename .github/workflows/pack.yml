@@ -1,23 +1,26 @@
 name: pack zsh
 # auto-task.start-build-time = ?
-# on: { "push": { "paths": [".github/workflows/pack.yml"] } }
-on: { "schedule": [{ "cron": "11 5 20 1,5,9 *" }] }
+on: { "push": { "paths": [".github/workflows/pack.yml"] } }
+# on: { "schedule": [{ "cron": "11 5 20 1,5,9 *" }] }
 
 env:
-  DEBIAN_FRONTEND: noninteractive
+  # DEBIAN_FRONTEND: noninteractive
+  ZSH_REPO: ghcr.io/2moe/zsh-static
 
 jobs:
-  docker:
+  pack:
+    strategy:
+      fail-fast: true
+      matrix: ${{ fromJson(vars.JSON).matrix }}
+
     runs-on: ubuntu-latest
     defaults:
       run:
         shell: zsh --pipefail -fex {0}
-    env:
-      ZSH_REPO: ghcr.io/2moe/zsh-static:builder-x64
     steps:
-      - name: install zsh
+      - name: install zsh builder
         shell: sh -e {0}
-        run: docker run --rm -v /bin:/host -w /opt/bin ${{env.ZSH_REPO}} cp zsh builder /host/
+        run: docker run --rm -v /bin:/host -w /opt/bin ${{env.ZSH_REPO}}:builder-x64 cp zsh builder /host/
 
       - name: Login to GHCR
         uses: docker/login-action@v3
@@ -32,4 +35,68 @@ jobs:
           fetch-depth: 1
 
       - name: build & push
-        run: ./src/build
+        run: /bin/builder --arch ${{matrix.arch}} --push
+
+      - name: compress to zstd
+        run: |
+          rm -rfv tmp ||:
+          mkdir -p tmp/a
+          docker export $(docker create ${{env.ZSH_REPO}}:${{matrix.arch}}) > tmp/a.tar
+          cd tmp
+          tar -C a -xf a.tar
+          mkdir -p a/usr/bin
+          ln -svf /opt/bin/zsh a/usr/bin/sh
+          run_tar=(
+            sudo tar
+            --use-compress-program='zstdmt -18v'
+            --posix
+            --owner=root --group=root --numeric-owner
+            -C a
+            -cf ../zsh-${{matrix.arch}}.tar.zst
+            .
+          )
+          $run_tar
+
+      - name: set title
+        run: printf "%s\n" "TITLE=$(date --utc +%Y-%m-%d)" >>$GITHUB_ENV
+
+      - name: release
+        uses: softprops/action-gh-release@v1
+        with:
+          fail_on_unmatched_files: true
+          tag_name: latest
+          name: ${{env.TITLE}}
+          files: |
+            tmp/*.zst
+  manifest:
+    needs: pack
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: zsh --pipefail -fex {0}
+    steps:
+      - name: install zsh builder
+        shell: sh -e {0}
+        run: docker run --rm -v /bin:/host -w /opt/bin ${{env.ZSH_REPO}}:builder-x64 cp zsh builder /host/
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: test json
+        shell: node {0}
+        run: |
+          const s = JSON.parse(`${{vars.JSON}}`).matrix.arch.join(",")
+          console.log(s)
+          const fs = require('fs')
+          fs.appendFileSync(`${process.env.GITHUB_ENV}`, `ARCHS=${s}\n`, 'utf8')
+
+      - name: create manifest
+        run: |
+          cmd=(
+            /bin/builder --push
+            manifest
+            --archs ${{env.ARCHS}}
+            --latest
+            --date
+          )
+          $cmd
