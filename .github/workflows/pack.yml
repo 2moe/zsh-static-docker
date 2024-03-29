@@ -1,7 +1,7 @@
 name: pack zsh
 # auto-task.start-build-time = ?
-# on: { "push": { "paths": [".github/workflows/pack.yml"] } }
-on: { "schedule": [{ "cron": "11 5 20 1,5,9 *" }] }
+on: { "push": { "paths": [".github/workflows/pack.yml"] } }
+# on: { "schedule": [{ "cron": "11 5 20 1,5,9 *" }] }
 
 env:
   # DEBIAN_FRONTEND: noninteractive
