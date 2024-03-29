@@ -82,38 +82,12 @@ jobs:
           files: |
             tmp/*.zst
 
-      - uses: actions/checkout@v4
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
         with:
-          ref: tmp
-      - name: Commit files
-        run: |
-          cp ${DIGEST_FILE} .
-          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          msg="add ${DIGEST_FILE:t}"
-          git add .
-          cmd=(
-            git commit -m $msg
-          )
-          $cmd|| {
-            sleep 5
-            git pull
-            $cmd
-          } || {
-            sleep 10
-            git pull
-            $cmd
-          } || {
-            sleep 20
-            git pull
-            $cmd
-          }
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          branch: tmp
-          force: true
-
+          name: digest-${{matrix.arch}}
+          path: ${{env.DIGEST_FILE}}
+          retention-days: 1
   manifest:
     needs: pack
     runs-on: ubuntu-latest
@@ -153,11 +127,14 @@ jobs:
           )
           $cmd
 
-      - uses: actions/checkout@v4
+      - name: Download All Artifacts
+        uses: actions/download-artifact@v4
         with:
-          ref: tmp
+          path: digests
+          pattern: digest-*
+          merge-multiple: true
       - name: concat toml
-        run: cat *.toml > digests.toml
+        run: cat digests/*.toml > digests.toml
 
       - name: release
         uses: softprops/action-gh-release@v1
