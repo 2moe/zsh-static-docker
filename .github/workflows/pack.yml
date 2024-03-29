@@ -86,6 +86,8 @@ jobs:
         with:
           ref: tmp
       - name: Commit files
+        id: commit-00
+        continue-on-error: true
         run: |
           cp ${DIGEST_FILE} .
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -93,21 +95,20 @@ jobs:
           git add .
           git commit -am "add ${DIGEST_FILE:t}"
       - name: Push changes
-        continue-on-error: true
-        id: push-00
+        if: steps.commit-00.conclusion != 'failure'
         uses: ad-m/github-push-action@master
         with:
           branch: tmp
           force: true
       - name: sleep
-        if: steps.push-00.conclusion == 'failure'
+        if: steps.commit-00.conclusion == 'failure'
         run: |
           lower_bound=5
           upper_bound=30
           random_number=$((RANDOM % (upper_bound - lower_bound + 1) + lower_bound))
           sleep $random_number
       - uses: actions/checkout@v4
-        if: steps.push-00.conclusion == 'failure'
+        if: steps.commit-00.conclusion == 'failure'
         with:
           ref: tmp
       - name: Commit files
@@ -118,7 +119,7 @@ jobs:
           git add .
           git commit -am "add ${DIGEST_FILE:t}"
       - name: Push changes
-        if: steps.push-00.conclusion == 'failure'
+        if: steps.commit-00.conclusion == 'failure'
         continue-on-error: true
         uses: ad-m/github-push-action@master
         with:
