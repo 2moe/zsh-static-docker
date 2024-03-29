@@ -11,10 +11,10 @@ jobs:
   pack:
     strategy:
       fail-fast: true
-      # matrix: ${{ fromJson(vars.JSON).matrix }}
-      matrix:
-        arch:
-          - x64
+      matrix: ${{ fromJson(vars.JSON).matrix }}
+      # matrix:
+      #   arch:
+      #     - x64
 
     runs-on: ubuntu-latest
     defaults:
@@ -55,6 +55,7 @@ jobs:
             --use-compress-program='zstdmt -18v'
             --posix
             --owner=root --group=root --numeric-owner
+            --exclude=.dockerenv
             -C a
             -cf zsh-${{matrix.arch}}.tar.zst
             .
