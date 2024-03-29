@@ -8,98 +8,12 @@ env:
   ZSH_REPO: ghcr.io/2moe/zsh-static
 
 jobs:
-  # pack:
-  #   strategy:
-  #     fail-fast: true
-  #     # matrix: ${{ fromJson(vars.JSON).matrix }}
-  #     matrix: { "arch": ["x64"]}
+  pack:
+    strategy:
+      fail-fast: true
+      # matrix: ${{ fromJson(vars.JSON).matrix }}
+      matrix: { "arch": ["x64"]}
 
-    # runs-on: ubuntu-latest
-    # defaults:
-    #   run:
-    #     shell: zsh --pipefail -fex {0}
-    # steps:
-    #   - name: install zsh builder
-    #     shell: sh -e {0}
-    #     run: docker run --pull=always --rm -v /bin:/host -w /opt/bin ${{env.ZSH_REPO}}:builder-x64 cp zsh builder /host/
-
-    #   - name: Login to GHCR
-    #     uses: docker/login-action@v3
-    #     with:
-    #       registry: ghcr.io
-    #       username: ${{ github.actor }}
-    #       password: ${{ secrets.GITHUB_TOKEN }}
-
-    #   - uses: actions/checkout@v4
-    #     with:
-    #       ref: dev
-
-    #   - name: build & push
-    #     run: |
-    #       /bin/builder --version
-    #       /bin/builder --arch ${{matrix.arch}} --push
-
-    #   - name: compress to zstd
-    #     run: |
-    #       rm -rfv tmp ||:
-    #       mkdir -p tmp/a
-    #       docker export $(docker create ${{env.ZSH_REPO}}:${{matrix.arch}}) > tmp/a.tar
-    #       cd tmp
-    #       tar -C a -xf a.tar
-    #       mkdir -p a/usr/bin
-    #       ln -svf /opt/bin/zsh a/usr/bin/sh
-    #       run_tar=(
-    #         sudo tar
-    #         --use-compress-program='zstdmt -18v'
-    #         --posix
-    #         --owner=root --group=root --numeric-owner
-    #         --exclude=.dockerenv
-    #         -C a
-    #         -cf zsh-${{matrix.arch}}.tar.zst
-    #         .
-    #       )
-    #       $run_tar
-
-    #   - name: create digest file
-    #     run: |
-    #       cd tmp
-    #       /bin/builder --arch ${{matrix.arch}} --digest
-    #       file=(*.toml)
-    #       digest_dir="/tmp/digest$RANDOM"
-    #       mkdir -p $digest_dir
-    #       cp $file[1] $digest_dir
-    #       printf "%s\n" "DIGEST_FILE=$digest_dir/$file[1]" >>$GITHUB_ENV
-
-    #   - name: set title
-    #     run: printf "%s\n" "TITLE=$(date --utc +%Y-%m-%d)" >>$GITHUB_ENV
-
-    #   - name: release
-    #     uses: softprops/action-gh-release@v1
-    #     with:
-    #       fail_on_unmatched_files: true
-    #       tag_name: latest
-    #       name: ${{env.TITLE}}
-    #       files: |
-    #         tmp/*.zst
-
-    #   - uses: actions/checkout@v4
-    #     with:
-    #       ref: tmp
-    #   - name: Commit files
-    #     run: |
-    #       cp ${DIGEST_FILE} .
-    #       git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-    #       git config --local user.name "github-actions[bot]"
-    #       git add .
-    #       git commit -am "add ${DIGEST_FILE:t}"
-    #   - name: Push changes
-    #     uses: ad-m/github-push-action@master
-    #     with:
-    #       branch: tmp
-    #       force: true
-
-  manifest:
-    # needs: pack
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -109,33 +23,119 @@ jobs:
         shell: sh -e {0}
         run: docker run --pull=always --rm -v /bin:/host -w /opt/bin ${{env.ZSH_REPO}}:builder-x64 cp zsh builder /host/
 
-      # - uses: actions/setup-node@v4
-      #   with:
-      #     node-version: 20
-      # - name: test json
-      #   shell: node {0}
-      #   run: |
-      #     const s = JSON.parse(`${{vars.JSON}}`).matrix.arch.join(",")
-      #     console.log(s)
-      #     const fs = require('fs')
-      #     fs.appendFileSync(`${process.env.GITHUB_ENV}`, `ARCHS=${s}\n`, 'utf8')
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      # - name: Login to GHCR
-      #   uses: docker/login-action@v3
-      #   with:
-      #     registry: ghcr.io
-      #     username: ${{ github.actor }}
-      #     password: ${{ secrets.GITHUB_TOKEN }}
-      # - name: create manifest
-      #   run: |
-      #     cmd=(
-      #       /bin/builder --push
-      #       manifest
-      #       --archs ${{env.ARCHS}}
-      #       --latest
-      #       --date
-      #     )
-      #     $cmd
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+
+      - name: build & push
+        run: |
+          /bin/builder --version
+          /bin/builder --arch ${{matrix.arch}} --push
+
+      - name: compress to zstd
+        run: |
+          rm -rfv tmp ||:
+          mkdir -p tmp/a
+          docker export $(docker create ${{env.ZSH_REPO}}:${{matrix.arch}}) > tmp/a.tar
+          cd tmp
+          tar -C a -xf a.tar
+          mkdir -p a/usr/bin
+          ln -svf /opt/bin/zsh a/usr/bin/sh
+          run_tar=(
+            sudo tar
+            --use-compress-program='zstdmt -18v'
+            --posix
+            --owner=root --group=root --numeric-owner
+            --exclude=.dockerenv
+            -C a
+            -cf zsh-${{matrix.arch}}.tar.zst
+            .
+          )
+          $run_tar
+
+      - name: create digest file
+        run: |
+          cd tmp
+          /bin/builder --arch ${{matrix.arch}} --digest
+          file=(*.toml)
+          digest_dir="/tmp/digest$RANDOM"
+          mkdir -p $digest_dir
+          cp $file[1] $digest_dir
+          printf "%s\n" "DIGEST_FILE=$digest_dir/$file[1]" >>$GITHUB_ENV
+
+      - name: set title
+        run: printf "%s\n" "TITLE=$(date --utc +%Y-%m-%d)" >>$GITHUB_ENV
+
+      - name: release
+        uses: softprops/action-gh-release@v1
+        with:
+          fail_on_unmatched_files: true
+          tag_name: latest
+          name: ${{env.TITLE}}
+          files: |
+            tmp/*.zst
+
+      - uses: actions/checkout@v4
+        with:
+          ref: tmp
+      - name: Commit files
+        run: |
+          cp ${DIGEST_FILE} .
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add .
+          git commit -am "add ${DIGEST_FILE:t}"
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          branch: tmp
+          force: true
+
+  manifest:
+    needs: pack
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: zsh --pipefail -fex {0}
+    steps:
+      - name: install zsh builder
+        shell: sh -e {0}
+        run: docker run --pull=always --rm -v /bin:/host -w /opt/bin ${{env.ZSH_REPO}}:builder-x64 cp zsh builder /host/
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: test json
+        shell: node {0}
+        run: |
+          const s = JSON.parse(`${{vars.JSON}}`).matrix.arch.join(",")
+          console.log(s)
+          const fs = require('fs')
+          fs.appendFileSync(`${process.env.GITHUB_ENV}`, `ARCHS=${s}\n`, 'utf8')
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: create manifest
+        run: |
+          cmd=(
+            /bin/builder --push
+            manifest
+            --archs ${{env.ARCHS}}
+            --latest
+            --date
+          )
+          $cmd
 
       - uses: actions/checkout@v4
         with:
