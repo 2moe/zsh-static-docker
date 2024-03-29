@@ -126,8 +126,16 @@ fn create_docker_file() -> io::Result<PathBuf> {
     eprintln!("[INFO] creating the tmp dir: {tmp_dir:?}");
     fs::create_dir_all(&tmp_dir)?;
 
-    let docker_file = tmp_dir.join("Dockerfile");
+    let dk_name = "Dockerfile";
+    let docker_file = tmp_dir.join(dk_name);
 
-    fs::write(docker_file, builtin_dockerfile_content())?;
+    let current_dk = env::current_dir()?.join(dk_name);
+
+    if current_dk.exists() {
+        fs::rename(current_dk, docker_file)?;
+    } else {
+        fs::write(docker_file, builtin_dockerfile_content())?;
+    }
+
     Ok(tmp_dir)
 }
