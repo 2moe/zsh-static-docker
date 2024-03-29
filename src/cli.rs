@@ -40,6 +40,10 @@ pub(crate) struct Cli {
     /// specify the docker registry.
     /// e.g., ghcr.io/[owner]/[repo]
     custom_reg: Option<String>,
+
+    #[argh(switch)]
+    /// generate blake3 hash
+    pub(crate) digest: bool,
 }
 #[derive(FromArgs, Debug)]
 #[argh(subcommand, name = "manifest")]

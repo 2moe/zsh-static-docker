@@ -2,6 +2,7 @@ use crate::cli::{run, Cli};
 use std::{env, fs, io, path::PathBuf, process::exit};
 
 mod cli;
+mod digest;
 mod static_vals;
 
 const fn builtin_dockerfile_content() -> &'static str {
@@ -43,6 +44,10 @@ fn main() -> io::Result<()> {
     if let Some(ref arch) = args.arch {
         if !arch_list.contains(&arch.as_str()) {
             panic!("Only support: {arch_list:?}")
+        }
+        if args.digest {
+            digest::gen_digest(arch);
+            exit(0);
         }
         build_docker(&reg, arch, args.push)?;
         exit(0);
