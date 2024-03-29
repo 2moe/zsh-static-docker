@@ -7,8 +7,9 @@
 ### Dockerfile
 
 ```dockerfile
-COPY --from=ghcr.io/2moe/zsh-static /opt/bin/zsh /bin/
-# --chmod requires `DOCKER_BUILDKIT`
+# zsh:
+COPY --from=ghcr.io/2moe/zsh-static /opt/bin/zsh /bin/zsh
+# busybox:
 # COPY --chmod=755 --from=ghcr.io/2moe/zsh-static /opt/bin/busybox /bin/ash
 ```
 
@@ -16,7 +17,7 @@ COPY --from=ghcr.io/2moe/zsh-static /opt/bin/zsh /bin/
 
 ```sh
 # files: ./tmp/zsh  ./tmp/busybox
-docker run --rm -v "$PWD/tmp":/host -w /opt/bin ghcr.io/2moe/zsh-static cp -L busybox zsh /host/
+docker run --rm -v "$PWD/tmp":/host ghcr.io/2moe/zsh-static cp busybox zsh /host/
 
 # Considering that not all architectures are added to the `latest` manifest.
 # If you are using an "unpopular" architecture (e.g., sparc, mipsle),
@@ -35,7 +36,7 @@ jobs:
     steps:
       - name: install zsh
         shell: sh -e {0}
-        run: docker run --rm -v /usr/local/bin:/host -w /opt/bin ghcr.io/2moe/zsh-static cp -L zsh /host/
+        run: docker run --rm -v /bin:/host ghcr.io/2moe/zsh-static cp zsh /host/
 
       - name: test zsh
         run: |
