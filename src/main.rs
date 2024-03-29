@@ -30,7 +30,7 @@ fn main() -> io::Result<()> {
         println!("{}", env!("CARGO_PKG_VERSION"));
         exit(0)
     }
-    // {"matrix":{"arch":["x64","rv64gc","arm64","armv7a","armv5te","mips64le","ppc64le","s390x","x86","alpha","hppa","loong64","m68k","ppc","ppc64","sh4","sparc64","ia64","x32","mipsle","mipsbe","armv4t","sparc","s390","armv3"]}}
+
     let arch_list = [
         "x64", "rv64gc", "arm64", "armv7a", "armv5te", "mips64le", "ppc64le",
         "s390x", "x86", //

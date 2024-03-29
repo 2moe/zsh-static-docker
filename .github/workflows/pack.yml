@@ -1,7 +1,7 @@
 name: pack zsh
 # auto-task.start-build-time = ?
-on: { "push": { "paths": [".github/workflows/pack.yml"] } }
-# on: { "schedule": [{ "cron": "11 5 20 1,5,9 *" }] }
+# on: { "push": { "paths": [".github/workflows/pack.yml"] } }
+on: { "schedule": [{ "cron": "11 5 20 1,5,9 *" }] }
 
 env:
   # DEBIAN_FRONTEND: noninteractive
@@ -74,7 +74,7 @@ jobs:
         run: printf "%s\n" "TITLE=$(date --utc +%Y-%m-%d)" >>$GITHUB_ENV
 
       - name: release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           fail_on_unmatched_files: true
           tag_name: latest
@@ -137,7 +137,7 @@ jobs:
         run: cat digests/*.toml > digests.toml
 
       - name: release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           fail_on_unmatched_files: true
           tag_name: latest
