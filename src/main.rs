@@ -132,7 +132,8 @@ fn create_docker_file() -> io::Result<PathBuf> {
     let current_dk = env::current_dir()?.join(dk_name);
 
     if current_dk.exists() {
-        fs::rename(current_dk, docker_file)?;
+        eprintln!("[INFO] using this file: {current_dk:?}");
+        fs::copy(current_dk, docker_file)?;
     } else {
         fs::write(docker_file, builtin_dockerfile_content())?;
     }

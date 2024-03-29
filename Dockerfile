@@ -119,5 +119,6 @@ FROM scratch
 ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/local/games:/bin:/usr/games:/opt/bin
 COPY --from=sid /app/ /opt/bin
 COPY --from=sid /usr/share/terminfo /usr/share/terminfo
+WORKDIR /opt/bin
 SHELL [ "/opt/bin/zsh", "--pipefail", "-fexc"]
 CMD [ "/opt/bin/zsh" ]
