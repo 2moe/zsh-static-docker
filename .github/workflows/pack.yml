@@ -37,7 +37,9 @@ jobs:
           ref: dev
 
       - name: build & push
-        run: /bin/builder --arch ${{matrix.arch}} --push
+        run: |
+          /bin/builder --version
+          /bin/builder --arch ${{matrix.arch}} --push
 
       - name: compress to zstd
         run: |

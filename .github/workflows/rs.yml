@@ -13,6 +13,8 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/checkout@v4
+        with:
+          ref: dev
       - uses: dtolnay/rust-toolchain@stable
       - name: cargo build
         env:
