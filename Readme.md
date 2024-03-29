@@ -85,7 +85,7 @@ systemd-nspawn -D zsh -E PATH=/usr/local/bin:/bin:/opt/bin
 
 - About ia64(a.k.a., 64-Bit Intel Itanium architecture)
   - Modern qemu does not support emulating ia64.
-  - If you don't have a machine (server) with ia64 cpu, then you need to download it by calling the docker api.
+  - If you don't have a machine (server) with ia64 cpu, then you may not be able to run ia64 architecture containers.
 
 ## Q&A
 
