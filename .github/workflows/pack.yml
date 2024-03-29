@@ -62,6 +62,7 @@ jobs:
 
       - name: create digest file
         run: |
+          cd tmp
           /bin/builder --arch ${{matrix.arch}} --digest
           file=(*.toml)
           digest_dir="/tmp/digest$RANDOM"
