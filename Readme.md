@@ -73,13 +73,16 @@ run it on posix-sh:
 # e.g., arch=rv64gc, arch=arm64.
 arch=x64
 
-mkdir -p tmp/zsh
+mkdir -p tmp/zsh-dir
 cd tmp
 curl -LO "https://github.com/2moe/zsh-static-docker/releases/download/latest/zsh-${arch}.tar.zst"
-tar -C zsh -xf zsh-${arch}.tar.zst
+tar -C zsh-dir -xf zsh-${arch}.tar.zst
 
-# run as root (i.e., +sudo/+doas)
-systemd-nspawn -D zsh -E PATH=/usr/local/bin:/bin:/opt/bin
+# test zsh, print hello world
+zsh-dir/opt/bin/zsh -fc 'print -P %F{cyan}Hello World%f'
+
+# run nspawn as root (i.e., +sudo/+doas)
+systemd-nspawn -D zsh-dir -E PATH=/usr/local/bin:/bin:/opt/bin
 ```
 
 ## other notes
