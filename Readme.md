@@ -63,14 +63,15 @@ jobs:
 run it on posix-sh:
 
 ```sh
-# [ "x64", "rv64gc", "arm64", "armv7a", "armv5te", "mips64le",
+# [
+#   "x64", "rv64gc", "arm64", "armv7a", "armv5te", "mips64le",
 #   "ppc64le", "s390x", "x86", "alpha", "hppa", "loong64",
 #   "m68k", "ppc", "ppc64", "sh4", "sparc64", "ia64", "x32",
 #   "mipsle", "mipsbe", "armv4t", "sparc", "s390", "armv3"
 # ]
 #
 # You can change arch=x64 to another value.
-# e.g., arch=rv64gc, arch=arm64.
+# e.g., arch=rv64gc, arch=arm64
 arch=x64
 
 mkdir -p tmp/zsh-dir
@@ -78,8 +79,8 @@ cd tmp
 curl -LO "https://github.com/2moe/zsh-static-docker/releases/download/latest/zsh-${arch}.tar.zst"
 tar -C zsh-dir -xf zsh-${arch}.tar.zst
 
-# test zsh, print hello world
-zsh-dir/opt/bin/zsh -fc 'print -P %F{cyan}Hello World%f'
+# test zsh: print hello world
+zsh-dir/opt/bin/zsh -fc 'print -P %F{cyan}Hello World'
 
 # run nspawn as root (i.e., +sudo/+doas)
 systemd-nspawn -D zsh-dir -E PATH=/usr/local/bin:/bin:/opt/bin
@@ -171,8 +172,11 @@ Dockerfile 里的构建步骤，本来是用 posix-sh 语法来写的。
 其他的东西（诸如 CI 流程）也能用 zsh 语法来写。
 
 最后，让我们庆祝这个 repo 的诞生 🥳！
+
 <del>
 Blessings for your birthday!
+
 Blessings for your everyday!
+
 Aunque el mundo se pueda acabar, disfrúalo.
 </del>
