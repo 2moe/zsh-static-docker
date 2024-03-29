@@ -9,9 +9,9 @@ env:
 
 jobs:
   pack:
-    # strategy:
-    #   fail-fast: true
-    #   matrix: ${{ fromJson(vars.JSON).matrix }}
+    strategy:
+      fail-fast: true
+      matrix: ${{ fromJson(vars.JSON).matrix }}
 
     runs-on: ubuntu-latest
     defaults:
@@ -22,52 +22,52 @@ jobs:
         shell: sh -e {0}
         run: docker run --rm -v /bin:/host -w /opt/bin ${{env.ZSH_REPO}}:builder-x64 cp zsh builder /host/
 
-      # - name: Login to GHCR
-      #   uses: docker/login-action@v3
-      #   with:
-      #     registry: ghcr.io
-      #     username: ${{ github.actor }}
-      #     password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      # - uses: actions/checkout@v4
-      #   with:
-      #     ref: dev
-      #     fetch-depth: 1
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 1
 
-      # - name: build & push
-      #   run: /bin/builder --arch ${{matrix.arch}} --push
+      - name: build & push
+        run: /bin/builder --arch ${{matrix.arch}} --push
 
-      # - name: compress to zstd
-      #   run: |
-      #     rm -rfv tmp ||:
-      #     mkdir -p tmp/a
-      #     docker export $(docker create ${{env.ZSH_REPO}}:${{matrix.arch}}) > tmp/a.tar
-      #     cd tmp
-      #     tar -C a -xf a.tar
-      #     mkdir -p a/usr/bin
-      #     ln -svf /opt/bin/zsh a/usr/bin/sh
-      #     run_tar=(
-      #       sudo tar
-      #       --use-compress-program='zstdmt -18v'
-      #       --posix
-      #       --owner=root --group=root --numeric-owner
-      #       -C a
-      #       -cf zsh-${{matrix.arch}}.tar.zst
-      #       .
-      #     )
-      #     $run_tar
+      - name: compress to zstd
+        run: |
+          rm -rfv tmp ||:
+          mkdir -p tmp/a
+          docker export $(docker create ${{env.ZSH_REPO}}:${{matrix.arch}}) > tmp/a.tar
+          cd tmp
+          tar -C a -xf a.tar
+          mkdir -p a/usr/bin
+          ln -svf /opt/bin/zsh a/usr/bin/sh
+          run_tar=(
+            sudo tar
+            --use-compress-program='zstdmt -18v'
+            --posix
+            --owner=root --group=root --numeric-owner
+            -C a
+            -cf zsh-${{matrix.arch}}.tar.zst
+            .
+          )
+          $run_tar
 
-      # - name: set title
-      #   run: printf "%s\n" "TITLE=$(date --utc +%Y-%m-%d)" >>$GITHUB_ENV
+      - name: set title
+        run: printf "%s\n" "TITLE=$(date --utc +%Y-%m-%d)" >>$GITHUB_ENV
 
-      # - name: release
-      #   uses: softprops/action-gh-release@v1
-      #   with:
-      #     fail_on_unmatched_files: true
-      #     tag_name: latest
-      #     name: ${{env.TITLE}}
-      #     files: |
-      #       tmp/*.zst
+      - name: release
+        uses: softprops/action-gh-release@v1
+        with:
+          fail_on_unmatched_files: true
+          tag_name: latest
+          name: ${{env.TITLE}}
+          files: |
+            tmp/*.zst
   manifest:
     needs: pack
     runs-on: ubuntu-latest
