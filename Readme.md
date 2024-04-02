@@ -36,7 +36,7 @@ jobs:
     steps:
       - name: install zsh
         shell: sh -e {0}
-        run: docker run --rm -v /bin:/host ghcr.io/2moe/zsh-static cp zsh /host/
+        run: docker run --rm -v /usr/local/bin:/host ghcr.io/2moe/zsh-static cp zsh /host/
 
       - name: test zsh
         run: |
